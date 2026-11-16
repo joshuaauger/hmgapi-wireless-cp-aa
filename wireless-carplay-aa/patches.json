@@ -11,15 +11,6 @@
   "expect": "patches/{set}/expect",
   "changes": [
     {
-      "type": "lines",
-      "path": "/system/onebin/{onebin}/featurexml.cfg",
-      "stock": "any",
-      "part": "projection",
-      "comment": [
-        "-/system/etc/permissions/com.hkmc.software.wifihotspot.xml"
-      ]
-    },
-    {
       "type": "prop",
       "key": "persist.ium.support",
       "value": "carplay",

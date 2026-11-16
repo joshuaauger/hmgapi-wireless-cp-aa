@@ -46,6 +46,10 @@ has "bridge props live" "prop/persist.iap2.iden.wireless=t" "$(cat $R/settings.t
 check "build.prop untouched" "persist.ium.support=none" "$(grep persist.ium $R/system/build.prop)"
 has "feature flag: CarPlay wireless file" '<feature name="com.hkmc.software.connectivity.carplay_wireless" />' "$(cat $R/system/etc/permissions/com.hkmc.software.connectivity.carplay_wireless.xml 2>/dev/null)"
 has "featurexml: AA wireless line commented" "#-/system/etc/permissions/com.hkmc.software.connectivity.androidauto_wireless.xml" "$(cat $R/system/onebin/$ONEBIN/featurexml.cfg)"
+# the hotspot feature, asked of HMG-API ("wifi": {"hotspot": true}): this test's /system has
+# no stock file, so HMG-API's own goes in (on a car with the stock file, only its line changes)
+has "hotspot feature: HMG-API's file" '<feature name="com.hkmc.software.wifihotspot" />' "$(cat $R/system/etc/permissions/com.hkmc.software.wifihotspot.xml 2>/dev/null)"
+check "featurexml: hotspot line not live" "" "$(grep -x -- '-/system/etc/permissions/com.hkmc.software.wifihotspot.xml' $R/system/onebin/$ONEBIN/featurexml.cfg || true)"
 check "turn-by-turn and bridge are hooks now: DiPO untouched" "" "$(echo "$out" | grep HKMC_DiPO)"
 
 printf '{"bridge": false}\n' > $R/data/hmgapi/settings/wireless-carplay-aa.json
