@@ -18,6 +18,7 @@ import tempfile
 
 MOD = Path(__file__).resolve().parents[2]
 PRODUCT = "CEEV.CAN.0000.V015.011.260206"
+PRODUCT_260903 = "CEEV.CAN.0000.V016.010.260903"
 ONEBIN = "ceev_ca"
 FEATURES = (
     "com.hkmc.software.wifihotspot",
@@ -78,9 +79,12 @@ class Unit:
         (root / "system/etc/permissions").mkdir(parents=True)
         (self.data / "settings").mkdir(parents=True)
         if synthetic:
+            # The 260903 set has no result hash yet (no stock featurexml.cfg to hash),
+            # so only the lists that exist are rewritten.
             for kind, text in (("stock", STOCK_CFG), ("expect", PATCHED_CFG)):
-                replace_cfg_hash(self.mod / "patches/ceev_ca" / kind,
-                                 md5(text.encode("utf-8")))
+                path = self.mod / "patches/ceev_ca" / kind
+                if path.exists():
+                    replace_cfg_hash(path, md5(text.encode("utf-8")))
 
     def settings(self, **settings):
         write(self.data / "settings/wireless-carplay-aa.json", json.dumps(settings))
@@ -253,6 +257,22 @@ def transaction_and_network(temp, sdk):
     fw.restored()
 
 
+def ceev_260903(temp, sdk):
+    unit = Unit(temp / "ceev-260903", sdk, PRODUCT_260903)
+    before = snapshot(unit.root / "system")
+    unit.engine("plan")
+    require(snapshot(unit.root / "system") == before,
+            "CAN 260903 plan passes both selectors without overrides and leaves /system unchanged")
+    unit.engine("apply")
+    require(unit.cfg.read_text() == PATCHED_CFG, "CAN 260903 apply comments only the feature lines")
+    require("prop/persist.ium.support=carplay" in (unit.root / "settings.txt").read_text(),
+            "CAN 260903 projection property is applied")
+    require(not unit.state("net.rules"), "CAN 260903: no firewall rule by default")
+    unit.engine("restore")
+    require(snapshot(unit.root / "system") == before, "CAN 260903 restore returns every original /system byte")
+    require(not (unit.root / "settings.txt").read_text(), "CAN 260903 restore returns original properties")
+
+
 def existing_car_defaults(temp, sdk):
     for product in ("CVEV.USA.0000.V015.012.260507", "NEEV.USA.0000.V015.012.260507",
                     "NEEV23.USA.0000.V015.012.260507", "CVEV.CAN.0000.V015.011.260206",
@@ -266,7 +286,8 @@ def existing_car_defaults(temp, sdk):
 
 def rejected_units(temp, sdk):
     for product in ("CEEV.USA.0000.V015.011.260206", "CEEV.CAN.0000.V015.011.250818",
-                    "CEEV.CAN.0000.V015.012.260206"):
+                    "CEEV.CAN.0000.V015.012.260206", "CEEV.USA.0000.V016.010.260903",
+                    "CEEV.CAN.0000.V015.011.260903"):
         unit = Unit(temp / product, sdk, product)
         before = snapshot(unit.root / "system")
         output = unit.engine("apply", expected=3)
@@ -317,6 +338,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="ioniq6-wireless-test-") as temp:
         temp = Path(temp)
         transaction_and_network(temp, sdk)
+        ceev_260903(temp, sdk)
         existing_car_defaults(temp, sdk)
         rejected_units(temp, sdk)
         if args.stock:

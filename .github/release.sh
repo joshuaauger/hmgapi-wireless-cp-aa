@@ -8,8 +8,8 @@
 # another key doesn't install over the old one (docs/mod-repos.md in HMG-API, section 5).
 set -e
 MOD=wireless-carplay-aa
-UUID=7251ce71-a146-8a1e-958b-dbffc6af7359
-REPO=https://github.com/Open-HMG/hmgapi-wireless-cp-aa
+UUID=6ed33151-8b1f-8033-b3a5-5e1134ead3fa
+REPO=https://github.com/joshuaauger/hmgapi-wireless-cp-aa
 TAG=${1:?usage: release.sh <tag> <author key>}; KEY=${2:?usage: release.sh <tag> <author key>}
 SDK=$(cd "${HMGAPI_SDK:?set HMGAPI_SDK to the unpacked HMG-API mod SDK}" && pwd)
 cd "$(dirname "$0")/.."

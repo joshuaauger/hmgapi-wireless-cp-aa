@@ -1,7 +1,7 @@
 {
   "id": "wireless-carplay-aa",
   "name": "Wireless CarPlay + Android Auto",
-  "version": "2.2.0-rc.3",
+  "version": "2.2.0-rc.4",
   "hmgapi": ">=1.1.0",
   "authors": [
     "VysseCodes"
@@ -51,6 +51,14 @@
       "model": "CEEV",
       "region": "CAN",
       "firmware": "260206",
+      "features": [
+        "hmgapi.wifi"
+      ]
+    },
+    {
+      "model": "CEEV",
+      "region": "CAN",
+      "firmware": "260903",
       "features": [
         "hmgapi.wifi"
       ]
