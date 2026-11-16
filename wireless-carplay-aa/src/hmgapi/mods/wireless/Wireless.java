@@ -34,6 +34,7 @@ import hmgapi.hook.Points;
  * start as before (hook point framework.context_impl.start_service).
  */
 public final class Wireless extends ModEntry {
+    private final IdentityRegistry identity = new IdentityRegistry();
     private final java.io.File aaLibrary;
     private Boolean aaTbtSupported;
 
@@ -70,6 +71,14 @@ public final class Wireless extends ModEntry {
     static final String[] NAVI_TBT = { "update_tbt_info", "update_tbt_sub_info", "update_tbt_sub_info_b", "update_tbt_sub_info2",
         "update_tbt_sub_info2_b", "update_tbt_sub_info_2c", "update_remain_dis", "update_tp_crossroad_name",
         "update_tp_destination_name", "update_tp_turn_list", "update_tp_turn_list_new", "update_tp_lane_info", "update_lane_info" };
+
+    @Override
+    public void zygoteInit(final ModContext mod) {
+        identity.logger(new IdentityRegistry.Logger() {
+            @Override public void log(String message) { mod.log("CarPlay identity " + message); }
+        });
+        mod.publish(hmgapi.mods.wireless.api.CarPlayIdentification.SERVICE, identity);
+    }
 
     @Override
     public void appLoaded(final ModContext mod, LoadedApp app) {
@@ -129,6 +138,8 @@ public final class Wireless extends ModEntry {
      */
     private void iap2(final ModContext mod, LoadedApp app) {
         final ClassLoader cl = app.classLoader;
+        if (mod.settingBoolean("shared_identity", true)) IdentityInstaller.install(mod, app, identity);
+        else mod.log("CarPlay identity sharing is off; contributions are not applied");
         if (mod.settingBoolean("tbt", true)) {
             mod.hook(cl, "iap2.init_info.check_supports_features", new MethodHook() {
                 @Override

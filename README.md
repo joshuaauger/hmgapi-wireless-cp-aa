@@ -20,6 +20,7 @@ The firewall workaround is off by default; the other settings below are on:
 |---|---|
 | Turn-by-turn on the cluster and HUD | CarPlay directions; Android Auto directions only with a verified native recipe |
 | Wireless CarPlay | The Bluetooth bridge and Wi-Fi sessions CarPlay needs |
+| Shared CarPlay identity | A typed API other mods use to contribute vehicle identity without competing native patches |
 | CarPlay music and Siri over Wi-Fi | AAC and Opus audio (`libleafiaaac.so`, using the head unit's own codecs) |
 | Settings > Phone Projection opens Device Connections | A hook in the Settings app (US/Canada) |
 | USB drives and hubs don't start wired Android Auto | A hook in the Android Auto app: a USB stick no longer blocks wireless Android Auto |
@@ -97,6 +98,24 @@ that needs a new or changed point:
 This repository's pull request can be open, as a draft, during 1 and 2; its CI fails
 until the SDK has the point. See [HMG-API's docs/mod-repos.md](https://github.com/Open-HMG/HMG-API/blob/main/docs/mod-repos.md), section 4.
 
+## CarPlay identification API
+
+Mods that declare `wireless-carplay-aa >=2.2.0-beta.3 <3.0.0` in `requires` can use the
+exported `hmgapi.mods.wireless.api` package. Wireless owns the verified native serializer;
+each consumer owns only the semantic facts it contributes. Vehicle identity and theme
+identity have independent owners and are composed without exposing raw iAP2 parameters.
+
+```java
+CarPlayIdentification identity = (CarPlayIdentification) mod.use(
+    "wireless-carplay-aa", CarPlayIdentification.SERVICE);
+identity.registerTheme(mod.id,
+    new CarPlayIdentification.ThemeIdentity("EXAMPLE", 1, "19.0"));
+```
+
+Call `removeTheme(mod.id)` when disabling that contribution. A second mod cannot replace
+an existing theme owner; it receives an error instead. The API does not provide display
+code, theme assets, or CarPlay session behavior—those remain the consumer's responsibility.
+
 ## Building and testing
 
 CI runs HMG-API's mod workflow, with the released 1.1.0-beta.1 SDK and its SHA-256
@@ -118,6 +137,9 @@ HMGAPI_SDK=$HMGAPI_SDK sh wireless-carplay-aa/tools/cpturns/test.sh
 ```
 ```
 HMGAPI_SDK=$HMGAPI_SDK sh wireless-carplay-aa/tools/recipes/test.sh
+
+CLANG=clang LLD=ld.lld QEMU=qemu-system-arm OBJCOPY=llvm-objcopy \
+  python3 wireless-carplay-aa/native/identity/test_equivalence.py
 ```
 ```
 $HMGAPI_SDK/bin/check-scripts.sh wireless-carplay-aa
@@ -126,7 +148,9 @@ $HMGAPI_SDK/bin/check-scripts.sh wireless-carplay-aa
 `test.sh` and `tools/recipes/test.sh` also check the mod on a car's real stock files,
 which aren't in any repository (maintainers keep them privately, in `~/hmg-private`);
 without them those parts say "skipped" and pass. `native/leafiaaac/build.sh` rebuilds
-`files/libleafiaaac.so` (clang + lld).
+`files/libleafiaaac.so` (clang + lld). `native/identity/build.sh` rebuilds the
+generic `files/libcarplayidentity.so`; its equivalence test executes the ARM serializer
+and compares its output with the former EV Routing implementation.
 
 Upstream releases use `v<mod.json version>` and the inherited upstream signing
 workflow (see [CONTRIBUTING.md](CONTRIBUTING.md)). Private Ioniq 6 releases use the

@@ -25,6 +25,14 @@
       "apply": "rebuild"
     },
     {
+      "key": "shared_identity",
+      "type": "toggle",
+      "default": true,
+      "title": "Shared CarPlay identity",
+      "apply": "restart",
+      "description": "Allow installed mods to contribute vehicle and appearance information to CarPlay's identification message. Takes effect when the head unit restarts."
+    },
+    {
       "key": "audio",
       "type": "toggle",
       "default": true,

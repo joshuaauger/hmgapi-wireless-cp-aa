@@ -12,15 +12,6 @@
   "expect": "patches/{set}/expect",
   "changes": [
     {
-      "type": "lines",
-      "path": "/system/onebin/{onebin}/featurexml.cfg",
-      "stock": "any",
-      "part": "projection",
-      "comment": [
-        "-/system/etc/permissions/com.hkmc.software.wifihotspot.xml"
-      ]
-    },
-    {
       "type": "prop",
       "key": "persist.ium.support",
       "value": "carplay",
@@ -44,6 +35,12 @@
       "src": "files/libleafiaaac.so",
       "mode": "644",
       "part": "audio"
+    },
+    {
+      "type": "add",
+      "path": "/system/lib/libcarplayidentity.so",
+      "src": "files/libcarplayidentity.so",
+      "mode": "644"
     }
   ]
 }
