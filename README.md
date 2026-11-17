@@ -14,7 +14,7 @@ released from this repository.
 ## What it does
 
 Each part is a setting in the HMG-API app (pick the mod in its list for its settings).
-The firewall workaround is off by default; the other settings below are on:
+The Android Auto firewall workaround is off by default; the other settings below are on:
 
 | Setting | What |
 |---|---|
@@ -24,6 +24,7 @@ The firewall workaround is off by default; the other settings below are on:
 | CarPlay music and Siri over Wi-Fi | AAC and Opus audio (`libleafiaaac.so`, using the head unit's own codecs) |
 | Settings > Phone Projection opens Device Connections | A hook in the Settings app (US/Canada) |
 | USB drives and hubs don't start wired Android Auto | A hook in the Android Auto app: a USB stick no longer blocks wireless Android Auto |
+| Allow wireless CarPlay through the hotspot firewall | The CarPlay ports and ICMPv6 on the hotspot only, for cars whose firewall allows them only on the wired link (Ioniq 6). Harmless where already allowed |
 | Allow wireless Android Auto through the hotspot firewall | **Off by default.** Experimental Ioniq 6 workaround: new IPv4 TCP connections on hotspot port 40515 |
 
 HMG-API backs up modified files and restores their original bytes when the mod is

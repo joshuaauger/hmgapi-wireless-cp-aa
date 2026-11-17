@@ -62,6 +62,14 @@
       "title": "Allow wireless Android Auto through the hotspot firewall",
       "apply": "rebuild",
       "description": "Experimental for Ioniq 6 CAN 260206. Allows new IPv4 TCP connections to port 40515 only from the car's hotspot subnet. HMG-API manages the rule and removes it when this setting or the mod is disabled. Leave off on cars that connect without it."
+    },
+    {
+      "key": "carplay_firewall",
+      "type": "toggle",
+      "default": true,
+      "title": "Allow wireless CarPlay through the hotspot firewall",
+      "apply": "rebuild",
+      "description": "For cars whose firewall allows the CarPlay ports only on the wired link (Ioniq 6). Allows the CarPlay ports and ICMPv6 only on the car's hotspot (192.168.0.0/24 and link-local). HMG-API manages the rules and removes them when this setting or the mod is disabled. Harmless on cars that already allow them."
     }
   ]
 }

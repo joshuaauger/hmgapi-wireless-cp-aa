@@ -1,0 +1,23 @@
+HMG-API libs ceev-can-260903-20261116-1913
+car: CEEV.CAN.0000.V016.010.260903
+hmgapi: 1.1.0-rc.5
+
+2d2e2116fc9a30ab2e435c3b8cafc695  87620  libCarPlay.so
+ea0ca708efa1379d48e8bbffe3183f52  63272  libCarPlayAndroid.so
+2b748bf85652b683abfbc4ce55db3efa  38312  libCarPlayAudio.so
+ef49c09b7ab5eb72298f9973443b66b3  128952  libCarPlayCore.so
+cf3cc23dad25b181a9fc12d606468715  641868  libCarPlayCoreUtils.so
+e85385d70194efe82cc8a6d0f66f5115  469316  libCarPlayUtils.so
+fe2e69fe933cf4f3c297a89b1fe54c5a  46316  libIap2Acc.so
+28b2ef844eae568b1f655c618a4edae3  13496  libIap2Ea.so
+dbfe7bd2e36152a50f97fed612cf6326  1837108  libautoreceiver_infobank.so
+8d483b1d6a4d21cd56fbed94fefd169b  7500  libcarplayidentity.so
+772f8b1e445eb6db731cb2593908517c  10628  libhmgapi_hook.so
+f50a09bcb3b09d4fbb9f26f1ce44abff  103708  libiap2DB.so
+18d67f40487f4786735b7b728b1a6141  34024  libiap2audio.so
+153a97fd6d2c62dc58286aa47c35feb3  107888  libiap2client.so
+8abfbae7cd32aa31c508040b3b7c7426  21688  libiap2eanative.so
+27cf13e18555023d09c6b2db3a07f313  13456  libiap2osandroid.so
+fc7cb675b46a44bd893a1edc054c5e71  214252  libiap2session.so
+42959e6f13265887d4034c6a9c137d17  34028  libiap2util.so
+a63e6492f38d541518b9606a978f5da3  8944  libleafiaaac.so

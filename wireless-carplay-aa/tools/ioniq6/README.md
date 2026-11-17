@@ -17,7 +17,7 @@ at the OS boundary. It covers:
   refusing a different region, firmware or build before writing `/system`.
 - Feature changes, failed result-checksum refusal, properties, disabling, and
   byte-for-byte restoration.
-- No firewall change by default on CEEV or the previously supported models.
+- No Android Auto firewall rule by default; the CarPlay hotspot rules (setting `carplay_firewall`) are on by default.
 - Opting in to exactly one IPv4 TCP 40515 NEW ingress rule, limited to `wlan0`
   and the hotspot subnet, without `overrides.allow_network`.
 - Insertion before the stock whitelist, repair after a stock drop moves ahead,

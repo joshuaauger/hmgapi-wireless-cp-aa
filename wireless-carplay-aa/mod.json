@@ -188,7 +188,7 @@
         ],
         "both_ways": true,
         "action": "accept",
-        "when": "settings.bridge",
+        "when": "settings.carplay_firewall",
         "comment": "Wireless CarPlay on whitelist-firewall cars (Ioniq 6): the stock firewall allows these ports only on the wired link"
       },
       {
@@ -196,7 +196,7 @@
         "in": "hotspot",
         "proto": "icmpv6",
         "action": "accept",
-        "when": "settings.bridge"
+        "when": "settings.carplay_firewall"
       },
       {
         "chain": "input",

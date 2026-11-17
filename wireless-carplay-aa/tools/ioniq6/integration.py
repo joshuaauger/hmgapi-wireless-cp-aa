@@ -87,6 +87,9 @@ class Unit:
                     replace_cfg_hash(path, md5(text.encode("utf-8")))
 
     def settings(self, **settings):
+        # The CarPlay hotspot rules are on by default; the Android Auto rule tests
+        # below look at the AA rule alone.
+        settings.setdefault("carplay_firewall", False)
         write(self.data / "settings/wireless-carplay-aa.json", json.dumps(settings))
 
     def state(self, name):
@@ -177,6 +180,7 @@ class Firewall:
 
 def transaction_and_network(temp, sdk):
     unit = Unit(temp / "accepted", sdk)
+    unit.settings()
     before = snapshot(unit.root / "system")
     unit.engine("plan")
     require(snapshot(unit.root / "system") == before,
@@ -189,7 +193,7 @@ def transaction_and_network(temp, sdk):
     require("prop/persist.ium.support=carplay" in (unit.root / "settings.txt").read_text(),
             "projection property is applied")
     require(not unit.state("net.rules") and "hmgapi net " not in unit.state("services.txt"),
-            "default settings create no firewall rule or keeper")
+            "with the CarPlay and Android Auto firewall settings off, no firewall rule or keeper")
 
     unit.settings(aa_firewall=True)
     plan = unit.engine("plan")
@@ -267,7 +271,10 @@ def ceev_260903(temp, sdk):
     require(unit.cfg.read_text() == PATCHED_CFG, "CAN 260903 apply comments only the feature lines")
     require("prop/persist.ium.support=carplay" in (unit.root / "settings.txt").read_text(),
             "CAN 260903 projection property is applied")
-    require(not unit.state("net.rules"), "CAN 260903: no firewall rule by default")
+    rules = unit.state("net.rules")
+    require("--dport 7000 " in rules and "icmpv6" in rules and "40515" not in rules
+            and "allow_network" not in unit.engine("plan"),
+            "CAN 260903: CarPlay hotspot rules by default, no Android Auto rule", rules)
     unit.engine("restore")
     require(snapshot(unit.root / "system") == before, "CAN 260903 restore returns every original /system byte")
     require(not (unit.root / "settings.txt").read_text(), "CAN 260903 restore returns original properties")
@@ -280,8 +287,8 @@ def existing_car_defaults(temp, sdk):
         unit = Unit(temp / product, sdk, product)
         unit.engine("plan")
         unit.engine("publish-state")
-        require(not unit.state("net.rules") and "hmgapi net " not in unit.state("services.txt"),
-                "existing model stays accepted with no default firewall rule: " + product)
+        require("40515" not in unit.state("net.rules"),
+                "existing model stays accepted with no default Android Auto firewall rule: " + product)
 
 
 def rejected_units(temp, sdk):
