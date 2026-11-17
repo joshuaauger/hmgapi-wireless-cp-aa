@@ -1,7 +1,7 @@
 {
   "id": "wireless-carplay-aa",
   "name": "Wireless CarPlay + Android Auto",
-  "version": "2.2.0-rc.6",
+  "version": "2.2.0-rc.7",
   "hmgapi": ">=1.1.0-rc.3",
   "authors": [
     "VysseCodes"
@@ -172,6 +172,32 @@
   },
   "network": {
     "rules": [
+      {
+        "chain": "input",
+        "in": "hotspot",
+        "proto": "tcp+udp",
+        "ports": [
+          "5000-5001",
+          5020,
+          "6000-6003",
+          6011,
+          6020,
+          6030,
+          6031,
+          7000
+        ],
+        "both_ways": true,
+        "action": "accept",
+        "when": "settings.bridge",
+        "comment": "Wireless CarPlay on whitelist-firewall cars (Ioniq 6): the stock firewall allows these ports only on the wired link"
+      },
+      {
+        "chain": "input",
+        "in": "hotspot",
+        "proto": "icmpv6",
+        "action": "accept",
+        "when": "settings.bridge"
+      },
       {
         "chain": "input",
         "in": "hotspot",
